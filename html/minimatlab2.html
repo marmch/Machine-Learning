@@ -1,0 +1,753 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>minimatlab2</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-10-14"><meta name="DC.source" content="minimatlab2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Part 1</a></li><li><a href="#3">Part 2</a></li></ul></div><pre class="codeinput"><span class="comment">%Mini MATLAB #1</span>
+<span class="comment">%Mark Mchedlishvili</span>
+</pre><h2>Part 1<a name="2"></a></h2><pre class="codeinput">N = 20;
+a0 = -0.3;
+a1 = 0.5;
+mu = 0;
+sigma = 0.2;
+beta = 25;
+alpha = 2;
+
+noise_pd = makedist(<span class="string">'Normal'</span>, <span class="string">'mu'</span>, mu, <span class="string">'sigma'</span>, sigma);
+noise = random(noise_pd, 1, N);
+
+xd = (rand(1,N).*2 - 1).';
+yd = a0 + a1*xd + noise.';
+xr = -1:0.1:1;
+yr = a0 + a1.*xr;
+figure;
+plot(xr,yr);
+title(<span class="string">'Actual Plot and Data'</span>);
+hold <span class="string">on</span>;
+scatter(xd, yd);
+hold <span class="string">off</span>;
+
+x1 = -1:0.01:1;
+x2 = -1:0.01:1;
+
+
+
+SN = inv(alpha*eye(2));
+mN = zeros(2,1);
+X00 = -1:0.01:1;
+
+p = zeros(201);
+<span class="keyword">for</span> i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, p);
+title(<span class="string">'Prior'</span>);
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title(<span class="string">'Data Space (Prior)'</span>);
+hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+<span class="keyword">end</span>
+hold <span class="string">off</span>;
+
+sx1 = size(x1);
+sx1 = sx1(2);
+sx2 = size(x2);
+sx2 = sx2(2);
+
+likelihood = zeros(sx1,sx2);
+<span class="keyword">for</span> i = 1:sx1
+    <span class="keyword">for</span> j = 1:sx2
+        distance = abs((-(x1(i).*xd(1)) + yd(1) - x2(j))./sqrt(x1(i)^2+1));
+        likelihood(i,j) = 1/(sigma*sqrt(2*pi))*exp(-(distance^2)/(2*sigma^2));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, likelihood);
+title(<span class="string">'Likelihood (1)'</span>);
+
+phi0 = ones(1,1);
+phi1 = xd(1);
+phi = [phi0 phi1];
+SN = inv(alpha*eye(2) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1); <span class="comment">%#ok&lt;MINV&gt;</span>
+X00 = -1:0.01:1;
+
+p = zeros(201);
+<span class="keyword">for</span> i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, p);
+title(<span class="string">'Posterior (1)'</span>);
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title(<span class="string">'Data Space (1)'</span>);
+hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+<span class="keyword">end</span>
+hold <span class="string">off</span>;
+
+
+likelihood = zeros(sx1,sx2);
+<span class="keyword">for</span> k = 1:2
+    <span class="keyword">for</span> i = 1:sx1
+        <span class="keyword">for</span> j = 1:sx2
+            distance = abs((-(x1(i).*xd(k)) + yd(k) - x2(j))./sqrt(x1(i)^2+1));
+            likelihood(i,j) = 1/(sigma*sqrt(2*pi))*exp(-(distance^2)/(2*sigma^2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, likelihood);
+title(<span class="string">'Likelihood (2)'</span>);
+
+phi0 = ones(2,1);
+phi1 = xd(1:2);
+phi = [phi0 phi1];
+SN = inv(alpha*eye(2) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1:2); <span class="comment">%#ok&lt;MINV&gt;</span>
+X00 = -1:0.01:1;
+
+p = zeros(201);
+<span class="keyword">for</span> i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, p);
+title(<span class="string">'Posterior (2)'</span>);
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title(<span class="string">'Data Space (2)'</span>);
+hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+<span class="keyword">end</span>
+hold <span class="string">off</span>;
+
+likelihood = zeros(sx1,sx2);
+<span class="keyword">for</span> k = 1:N
+    <span class="keyword">for</span> i = 1:sx1
+        <span class="keyword">for</span> j = 1:sx2
+            distance = abs((-(x1(i).*xd(k)) + yd(k) - x2(j))./sqrt(x1(i)^2+1));
+            likelihood(i,j) = 1/(sigma*sqrt(2*pi))*exp(-(distance^2)/(2*sigma^2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, likelihood);
+title(<span class="string">'Likelihood (20)'</span>);
+
+phi0 = ones(20,1);
+phi1 = xd;
+phi = [phi0 phi1];
+SN = inv(alpha*eye(2) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd; <span class="comment">%#ok&lt;MINV&gt;</span>
+X00 = -1:0.01:1;
+
+p = zeros(201);
+<span class="keyword">for</span> i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+<span class="keyword">end</span>
+figure;
+contourf(x1,x2, p);
+title(<span class="string">'Posterior (20)'</span>);
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title(<span class="string">'Data Space (20)'</span>);
+hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+<span class="keyword">end</span>
+hold <span class="string">off</span>;
+</pre><img vspace="5" hspace="5" src="minimatlab2_01.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_02.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_03.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_04.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_05.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_06.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_07.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_08.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_09.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_10.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_11.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_12.png" alt=""> <h2>Part 2<a name="3"></a></h2><pre class="codeinput">mu = 0;
+sigma = 0.1;
+N = 25;
+x = 0:0.01:1;
+beta = 5;
+alpha = 1;
+noise_pd = makedist(<span class="string">'Normal'</span>, <span class="string">'mu'</span>, mu, <span class="string">'sigma'</span>, sigma);
+noise = random(noise_pd, 1, N);
+
+xd = rand(1,N).';
+yd = sin(2*pi*xd) + noise.';
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title(<span class="string">'1 Data Point'</span>);
+hold <span class="string">on</span>;
+scatter(xd(1), yd(1));
+
+phi = zeros(1,9);
+phi(:,1) = ones(1,1);
+<span class="keyword">for</span> i = 2:9
+    phi(:,i) = exp(-((xd(1)-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1); <span class="comment">%#ok&lt;MINV&gt;</span>
+
+stuff = mN(1);
+<span class="keyword">for</span> i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+<span class="keyword">for</span> i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+var = zeros(1,101);
+<span class="keyword">for</span> i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+<span class="keyword">end</span>
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, <span class="string">'r'</span>, <span class="string">'FaceAlpha'</span>, 0.1);
+hold <span class="string">off</span>;
+
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title(<span class="string">'2 Data Points'</span>);
+hold <span class="string">on</span>;
+scatter(xd(1:2), yd(1:2));
+
+phi = zeros(2,9);
+phi(:,1) = ones(2,1);
+<span class="keyword">for</span> i = 2:9
+    phi(:,i) = exp(-((xd(1:2)-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1:2); <span class="comment">%#ok&lt;MINV&gt;</span>
+
+stuff = mN(1);
+<span class="keyword">for</span> i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+<span class="keyword">for</span> i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+var = zeros(1,101);
+<span class="keyword">for</span> i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+<span class="keyword">end</span>
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, <span class="string">'r'</span>, <span class="string">'FaceAlpha'</span>, 0.1);
+
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title(<span class="string">'4 Data Points'</span>);
+hold <span class="string">on</span>;
+scatter(xd(1:4), yd(1:4));
+
+phi = zeros(4,9);
+phi(:,1) = ones(4,1);
+<span class="keyword">for</span> i = 2:9
+    phi(:,i) = exp(-((xd(1:4)-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1:4); <span class="comment">%#ok&lt;MINV&gt;</span>
+
+stuff = mN(1);
+<span class="keyword">for</span> i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+<span class="keyword">for</span> i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+var = zeros(1,101);
+<span class="keyword">for</span> i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+<span class="keyword">end</span>
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, <span class="string">'r'</span>, <span class="string">'FaceAlpha'</span>, 0.1);
+
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title(<span class="string">'20 Data Points'</span>);
+hold <span class="string">on</span>;
+scatter(xd, yd);
+
+phi = zeros(N,9);
+phi(:,1) = ones(N,1);
+<span class="keyword">for</span> i = 2:9
+    phi(:,i) = exp(-((xd-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd; <span class="comment">%#ok&lt;MINV&gt;</span>
+
+stuff = mN(1);
+<span class="keyword">for</span> i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+<span class="keyword">for</span> i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+<span class="keyword">end</span>
+
+var = zeros(1,101);
+<span class="keyword">for</span> i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+<span class="keyword">end</span>
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, <span class="string">'r'</span>, <span class="string">'FaceAlpha'</span>, 0.1);
+</pre><img vspace="5" hspace="5" src="minimatlab2_13.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_14.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_15.png" alt=""> <img vspace="5" hspace="5" src="minimatlab2_16.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%Mini MATLAB #1
+%Mark Mchedlishvili
+%% Part 1
+
+N = 20;
+a0 = -0.3;
+a1 = 0.5;
+mu = 0;
+sigma = 0.2;
+beta = 25;
+alpha = 2;
+
+noise_pd = makedist('Normal', 'mu', mu, 'sigma', sigma);
+noise = random(noise_pd, 1, N);
+
+xd = (rand(1,N).*2 - 1).';
+yd = a0 + a1*xd + noise.';
+xr = -1:0.1:1;
+yr = a0 + a1.*xr;
+figure;
+plot(xr,yr);
+title('Actual Plot and Data');
+hold on;
+scatter(xd, yd);
+hold off;
+
+x1 = -1:0.01:1;
+x2 = -1:0.01:1;
+
+
+
+SN = inv(alpha*eye(2));
+mN = zeros(2,1);
+X00 = -1:0.01:1;
+
+p = zeros(201);
+for i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+end
+figure;
+contourf(x1,x2, p);
+title('Prior');
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title('Data Space (Prior)');
+hold on;
+for i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+end
+hold off;
+
+sx1 = size(x1);
+sx1 = sx1(2);
+sx2 = size(x2);
+sx2 = sx2(2);
+
+likelihood = zeros(sx1,sx2);
+for i = 1:sx1
+    for j = 1:sx2
+        distance = abs((-(x1(i).*xd(1)) + yd(1) - x2(j))./sqrt(x1(i)^2+1));
+        likelihood(i,j) = 1/(sigma*sqrt(2*pi))*exp(-(distance^2)/(2*sigma^2));
+    end
+end
+figure;
+contourf(x1,x2, likelihood);
+title('Likelihood (1)');
+
+phi0 = ones(1,1);
+phi1 = xd(1);
+phi = [phi0 phi1];
+SN = inv(alpha*eye(2) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1); %#ok<MINV>
+X00 = -1:0.01:1;
+
+p = zeros(201);
+for i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+end
+figure;
+contourf(x1,x2, p);
+title('Posterior (1)');
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title('Data Space (1)');
+hold on;
+for i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+end
+hold off;
+
+
+likelihood = zeros(sx1,sx2);
+for k = 1:2
+    for i = 1:sx1
+        for j = 1:sx2
+            distance = abs((-(x1(i).*xd(k)) + yd(k) - x2(j))./sqrt(x1(i)^2+1));
+            likelihood(i,j) = 1/(sigma*sqrt(2*pi))*exp(-(distance^2)/(2*sigma^2));
+        end
+    end
+end
+figure;
+contourf(x1,x2, likelihood);
+title('Likelihood (2)');
+
+phi0 = ones(2,1);
+phi1 = xd(1:2);
+phi = [phi0 phi1];
+SN = inv(alpha*eye(2) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1:2); %#ok<MINV>
+X00 = -1:0.01:1;
+
+p = zeros(201);
+for i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+end
+figure;
+contourf(x1,x2, p);
+title('Posterior (2)');
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title('Data Space (2)');
+hold on;
+for i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+end
+hold off;
+
+likelihood = zeros(sx1,sx2);
+for k = 1:N
+    for i = 1:sx1
+        for j = 1:sx2
+            distance = abs((-(x1(i).*xd(k)) + yd(k) - x2(j))./sqrt(x1(i)^2+1));
+            likelihood(i,j) = 1/(sigma*sqrt(2*pi))*exp(-(distance^2)/(2*sigma^2));
+        end
+    end
+end
+figure;
+contourf(x1,x2, likelihood);
+title('Likelihood (20)');
+
+phi0 = ones(20,1);
+phi1 = xd;
+phi = [phi0 phi1];
+SN = inv(alpha*eye(2) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd; %#ok<MINV>
+X00 = -1:0.01:1;
+
+p = zeros(201);
+for i = 1:201
+    X01 = (i-101)/100*ones(1,201);
+    p(:,i) = mvnpdf([X00;X01].', mN.', SN);
+end
+figure;
+contourf(x1,x2, p);
+title('Posterior (20)');
+
+r = mvnrnd(mN.', SN, 6);
+figure;
+title('Data Space (20)');
+hold on;
+for i = 1:6
+    plot(x1,r(i,1)+r(i,2)*x1);
+end
+hold off;
+
+%% Part 2
+mu = 0;
+sigma = 0.1;
+N = 25;
+x = 0:0.01:1;
+beta = 5;
+alpha = 1;
+noise_pd = makedist('Normal', 'mu', mu, 'sigma', sigma);
+noise = random(noise_pd, 1, N);
+
+xd = rand(1,N).';
+yd = sin(2*pi*xd) + noise.';
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title('1 Data Point');
+hold on;
+scatter(xd(1), yd(1));
+
+phi = zeros(1,9);
+phi(:,1) = ones(1,1);
+for i = 2:9
+    phi(:,i) = exp(-((xd(1)-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1); %#ok<MINV>
+
+stuff = mN(1);
+for i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+for i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+var = zeros(1,101);
+for i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+end
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, 'r', 'FaceAlpha', 0.1);
+hold off;
+
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title('2 Data Points');
+hold on;
+scatter(xd(1:2), yd(1:2));
+
+phi = zeros(2,9);
+phi(:,1) = ones(2,1);
+for i = 2:9
+    phi(:,i) = exp(-((xd(1:2)-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1:2); %#ok<MINV>
+
+stuff = mN(1);
+for i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+for i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+var = zeros(1,101);
+for i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+end
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, 'r', 'FaceAlpha', 0.1);
+
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title('4 Data Points');
+hold on;
+scatter(xd(1:4), yd(1:4));
+
+phi = zeros(4,9);
+phi(:,1) = ones(4,1);
+for i = 2:9
+    phi(:,i) = exp(-((xd(1:4)-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd(1:4); %#ok<MINV>
+
+stuff = mN(1);
+for i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+for i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+var = zeros(1,101);
+for i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+end
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, 'r', 'FaceAlpha', 0.1);
+
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title('20 Data Points');
+hold on;
+scatter(xd, yd);
+
+phi = zeros(N,9);
+phi(:,1) = ones(N,1);
+for i = 2:9
+    phi(:,i) = exp(-((xd-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd; %#ok<MINV>
+
+stuff = mN(1);
+for i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+for i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+var = zeros(1,101);
+for i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+end
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, 'r', 'FaceAlpha', 0.1);
+
+##### SOURCE END #####
+--></body></html>

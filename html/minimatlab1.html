@@ -1,0 +1,461 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>minimatlab1</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-09-30"><meta name="DC.source" content="minimatlab1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Binomial</a></li><li><a href="#3">Gaussian</a></li></ul></div><pre class="codeinput"><span class="comment">%Mini MATLAB #1</span>
+<span class="comment">%Mark Mchedlishvili</span>
+</pre><h2>Binomial<a name="2"></a></h2><pre class="codeinput"><span class="comment">%Bernoulli Distribution</span>
+p = 0.3;
+pd = makedist(<span class="string">'Binomial'</span>,<span class="string">'p'</span>, p);
+
+N1 = 1000; <span class="comment">% # iterations</span>
+N2 = 100; <span class="comment">% # elements</span>
+
+X2 = 0:0.01:1;
+
+<span class="comment">%Make a bad guess</span>
+a = 10;
+b = 4;
+prior = betapdf(X2,a,b);
+figure;
+plot(prior);
+title(<span class="string">'Binomial Prior (Bad Guess)'</span>);
+xlabel(<span class="string">'Mean'</span>);
+ylabel(<span class="string">'Likelihood'</span>);
+
+<span class="comment">%Make a good guess (a/(a+b)~p)</span>
+a = 5;
+b = 7;
+
+<span class="comment">%Binomial distribution -&gt; Beta distribution Prior</span>
+prior = betapdf(X2,a,b);
+figure;
+plot(prior);
+title(<span class="string">'Binomial Prior (Good Guess)'</span>);
+xlabel(<span class="string">'Mean'</span>);
+ylabel(<span class="string">'Likelihood'</span>);
+
+SET = [1,2,10,50]; <span class="comment">%At which points to plot interim posteriors</span>
+X1 = 0:100;
+mean_ml_sum = zeros(1,N2);
+mean_cp_sum = zeros(1,N2);
+<span class="keyword">for</span> i = 1:N1
+    r = random(pd, 1, N2);
+    <span class="keyword">for</span> n = 1:N2
+        numones = sum(r(1:n));
+        mean_ml = mean(r(1:n)); <span class="comment">%ML mean estimate</span>
+        a_ = a + r(n);
+        b_ = b + 1-r(n);
+        prior = betapdf(X2,a_,b_);
+        mean_cp = (numones+a)/(n+a+b); <span class="comment">%CP mean estimate</span>
+        mean_ml_sum(n) = mean_ml_sum(n) + (mean_ml-p).^2;
+        mean_cp_sum(n) = mean_cp_sum(n) + (mean_cp-p).^2;
+
+        <span class="comment">%Plot posterior</span>
+        <span class="keyword">if</span> i == 1
+            <span class="keyword">if</span> any(SET == n)
+                likelihood = binopdf(X1,100,mean_cp);
+                posterior = prior .* likelihood;
+                figure;
+                plot(posterior);
+                title(strcat({<span class="string">'Binomial Posterior '</span>}, num2str(n), <span class="keyword">...</span>
+                    {<span class="string">' samples'</span>}));
+                xlabel(<span class="string">'Mean'</span>);
+                ylabel(<span class="string">'Likelihood'</span>);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%Final posterior</span>
+X2 = 0:0.01:1;
+likelihood = binopdf(X1,100,p);
+posterior = prior .* likelihood;
+
+figure;
+plot(posterior);
+title(<span class="string">'Binomial Final Posterior'</span>);
+xlabel(<span class="string">'Mean'</span>);
+ylabel(<span class="string">'Likelihood'</span>);
+
+mean_ml = mean_ml_sum ./ N2;
+mean_cp = mean_cp_sum ./ N2;
+
+figure;
+semilogy(mean_ml);
+title(<span class="string">'Binomal Mean ML Error'</span>);
+xlabel(<span class="string">'Number Samples'</span>);
+ylabel(<span class="string">'Error'</span>);
+
+figure;
+semilogy(mean_cp);
+title(<span class="string">'Binomial Mean CP Error'</span>);
+xlabel(<span class="string">'Number Samples'</span>);
+ylabel(<span class="string">'Error'</span>);
+</pre><img vspace="5" hspace="5" src="minimatlab1_01.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_02.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_03.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_04.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_05.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_06.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_07.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_08.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_09.png" alt=""> <h2>Gaussian<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Gaussian Distribution</span>
+mu = 50;
+sigma = 5;
+pd = makedist(<span class="string">'Normal'</span>, <span class="string">'mu'</span>, mu, <span class="string">'sigma'</span>, sigma);
+
+N1 = 1000; <span class="comment">% # iterations</span>
+N2 = 100; <span class="comment">% # elements</span>
+
+[X1, T] = meshgrid(0:100, 0:0.001:0.1);
+
+<span class="comment">%Make a bad guess</span>
+mu0 = 80;
+v = 10;
+alpha = 15;
+beta = 2000;
+
+prior = (beta.^alpha).*sqrt(v)./(gamma(alpha).*sqrt(2.*pi)).* <span class="keyword">...</span>
+    T.^(alpha-0.5).*exp(-beta.*T).*exp(-v*T.*((X1-mu0).^2)./2);
+figure;
+mesh(X1,T,prior);
+title(<span class="string">'Gaussian Prior (Bad Guess)'</span>);
+xlabel(<span class="string">'Mean'</span>);
+ylabel(<span class="string">'T'</span>);
+zlabel(<span class="string">'Likelihood'</span>);
+
+<span class="comment">%Make a good guess</span>
+mu0 = 47;
+v = 2;
+alpha = 4;
+beta = 100;
+
+prior = (beta.^alpha).*sqrt(v)./(gamma(alpha).*sqrt(2.*pi)).* <span class="keyword">...</span>
+    T.^(alpha-0.5).*exp(-beta.*T).*exp(-v*T.*((X1-mu0).^2)./2);
+figure;
+mesh(X1,T,prior);
+title(<span class="string">'Gaussian Prior (Good Guess)'</span>);
+xlabel(<span class="string">'Mean'</span>);
+ylabel(<span class="string">'T'</span>);
+zlabel(<span class="string">'Likelihood'</span>);
+
+SET = [1,2,10,50];
+mean_ml_sum = zeros(1,N2);
+mean_cp_sum = zeros(1,N2);
+<span class="keyword">for</span> i = 1:N1
+    r = random(pd, 1, N2);
+    <span class="keyword">for</span> n = 1:N2
+        numones = sum(r(1:n));
+        mean_ml = mean(r(1:n)); <span class="comment">%ML mean estimate</span>
+        v_ = v + n;
+        mu0_ = (v*mu0 + n*mean_ml)/(v + n);
+        alpha_ = alpha + n/2;
+        beta_ = beta + 1/2*sum((r(1:n)-mean_ml).^2) + <span class="keyword">...</span>
+            n*v/(n+v)*(mean_ml-mu0).^2/2;
+        mean_ml_sum(n) = mean_ml_sum(n) + (mean_ml-mu).^2;
+        mean_cp_sum(n) = mean_cp_sum(n) + (mu0_-mu).^2;
+        <span class="comment">%Plot posteriors</span>
+        <span class="keyword">if</span> i == 1
+            <span class="keyword">if</span> any(SET == n)
+                likelihood = normpdf(0:100,mu0_,beta_/alpha_);
+                prior = (beta_.^alpha_).*sqrt(v_)./(gamma(alpha_).* <span class="keyword">...</span>
+                    sqrt(2.*pi)).*T.^(alpha_-0.5).*exp(-beta_.*T).* <span class="keyword">...</span>
+                    exp(-v_*T.*((X1-mu0_).^2)./2);
+                posterior = prior .* likelihood(ones(1,101),:);
+                figure;
+                mesh(X1,T,posterior);
+                title(strcat({<span class="string">'Gaussian Posterior '</span>}, num2str(n), <span class="keyword">...</span>
+                    {<span class="string">' samples'</span>}));
+                xlabel(<span class="string">'Mean'</span>);
+                ylabel(<span class="string">'T'</span>);
+                zlabel(<span class="string">'Likelihood'</span>);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%Final posterior</span>
+mean_ml = mean_ml_sum ./ N1;
+mean_cp = mean_cp_sum ./ N1;
+
+likelihood = normpdf(0:100,mu0_,beta_/alpha_);
+prior = (beta_.^alpha_).*sqrt(v_)./(gamma(alpha_).* <span class="keyword">...</span>
+    sqrt(2.*pi)).*T.^(alpha_-0.5).*exp(-beta_.*T).* <span class="keyword">...</span>
+    exp(-v_*T.*((X1-mu0_).^2)./2);
+posterior = prior .* likelihood(ones(1,101),:);
+figure;
+mesh(X1,T,posterior);
+title(strcat(<span class="string">'Gaussian Final Posterior'</span>));
+xlabel(<span class="string">'Mean'</span>);
+ylabel(<span class="string">'T'</span>);
+zlabel(<span class="string">'Likelihood'</span>);
+
+figure;
+semilogy(mean_ml);
+title(<span class="string">'Gaussian Mean ML Error'</span>);
+xlabel(<span class="string">'Number Samples'</span>);
+ylabel(<span class="string">'Error'</span>);
+
+figure;
+semilogy(mean_cp);
+title(<span class="string">'Gaussian Mean CP Error'</span>);
+xlabel(<span class="string">'Number Samples'</span>);
+ylabel(<span class="string">'Error'</span>);
+</pre><img vspace="5" hspace="5" src="minimatlab1_10.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_11.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_12.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_13.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_14.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_15.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_16.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_17.png" alt=""> <img vspace="5" hspace="5" src="minimatlab1_18.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%Mini MATLAB #1
+%Mark Mchedlishvili
+%% Binomial
+
+%Bernoulli Distribution
+p = 0.3;
+pd = makedist('Binomial','p', p);
+
+N1 = 1000; % # iterations
+N2 = 100; % # elements
+
+X2 = 0:0.01:1;
+
+%Make a bad guess
+a = 10;
+b = 4;
+prior = betapdf(X2,a,b);
+figure;
+plot(prior);
+title('Binomial Prior (Bad Guess)');
+xlabel('Mean');
+ylabel('Likelihood');
+
+%Make a good guess (a/(a+b)~p)
+a = 5;
+b = 7;
+
+%Binomial distribution -> Beta distribution Prior
+prior = betapdf(X2,a,b);
+figure;
+plot(prior);
+title('Binomial Prior (Good Guess)');
+xlabel('Mean');
+ylabel('Likelihood');
+
+SET = [1,2,10,50]; %At which points to plot interim posteriors
+X1 = 0:100;
+mean_ml_sum = zeros(1,N2);
+mean_cp_sum = zeros(1,N2);
+for i = 1:N1
+    r = random(pd, 1, N2);
+    for n = 1:N2
+        numones = sum(r(1:n));
+        mean_ml = mean(r(1:n)); %ML mean estimate
+        a_ = a + r(n);
+        b_ = b + 1-r(n);
+        prior = betapdf(X2,a_,b_);
+        mean_cp = (numones+a)/(n+a+b); %CP mean estimate
+        mean_ml_sum(n) = mean_ml_sum(n) + (mean_ml-p).^2;
+        mean_cp_sum(n) = mean_cp_sum(n) + (mean_cp-p).^2;
+        
+        %Plot posterior
+        if i == 1
+            if any(SET == n)
+                likelihood = binopdf(X1,100,mean_cp);
+                posterior = prior .* likelihood;
+                figure;
+                plot(posterior);
+                title(strcat({'Binomial Posterior '}, num2str(n), ...
+                    {' samples'}));
+                xlabel('Mean');
+                ylabel('Likelihood');
+            end
+        end
+    end
+end
+
+%Final posterior
+X2 = 0:0.01:1;
+likelihood = binopdf(X1,100,p);
+posterior = prior .* likelihood;
+
+figure;
+plot(posterior);
+title('Binomial Final Posterior');
+xlabel('Mean');
+ylabel('Likelihood');
+
+mean_ml = mean_ml_sum ./ N2;
+mean_cp = mean_cp_sum ./ N2;
+
+figure;
+semilogy(mean_ml);
+title('Binomal Mean ML Error');
+xlabel('Number Samples');
+ylabel('Error');
+
+figure;
+semilogy(mean_cp);
+title('Binomial Mean CP Error');
+xlabel('Number Samples');
+ylabel('Error');
+
+%% Gaussian
+
+% Gaussian Distribution
+mu = 50;
+sigma = 5;
+pd = makedist('Normal', 'mu', mu, 'sigma', sigma);
+
+N1 = 1000; % # iterations
+N2 = 100; % # elements
+
+[X1, T] = meshgrid(0:100, 0:0.001:0.1);
+
+%Make a bad guess
+mu0 = 80;
+v = 10;
+alpha = 15;
+beta = 2000;
+
+prior = (beta.^alpha).*sqrt(v)./(gamma(alpha).*sqrt(2.*pi)).* ...
+    T.^(alpha-0.5).*exp(-beta.*T).*exp(-v*T.*((X1-mu0).^2)./2);
+figure;
+mesh(X1,T,prior);
+title('Gaussian Prior (Bad Guess)');
+xlabel('Mean');
+ylabel('T');
+zlabel('Likelihood');
+
+%Make a good guess
+mu0 = 47;
+v = 2;
+alpha = 4;
+beta = 100;
+
+prior = (beta.^alpha).*sqrt(v)./(gamma(alpha).*sqrt(2.*pi)).* ...
+    T.^(alpha-0.5).*exp(-beta.*T).*exp(-v*T.*((X1-mu0).^2)./2);
+figure;
+mesh(X1,T,prior);
+title('Gaussian Prior (Good Guess)');
+xlabel('Mean');
+ylabel('T');
+zlabel('Likelihood');
+
+SET = [1,2,10,50];
+mean_ml_sum = zeros(1,N2);
+mean_cp_sum = zeros(1,N2);
+for i = 1:N1
+    r = random(pd, 1, N2);
+    for n = 1:N2
+        numones = sum(r(1:n));
+        mean_ml = mean(r(1:n)); %ML mean estimate
+        v_ = v + n;
+        mu0_ = (v*mu0 + n*mean_ml)/(v + n);
+        alpha_ = alpha + n/2;
+        beta_ = beta + 1/2*sum((r(1:n)-mean_ml).^2) + ...
+            n*v/(n+v)*(mean_ml-mu0).^2/2;
+        mean_ml_sum(n) = mean_ml_sum(n) + (mean_ml-mu).^2;
+        mean_cp_sum(n) = mean_cp_sum(n) + (mu0_-mu).^2;
+        %Plot posteriors
+        if i == 1
+            if any(SET == n)
+                likelihood = normpdf(0:100,mu0_,beta_/alpha_);
+                prior = (beta_.^alpha_).*sqrt(v_)./(gamma(alpha_).* ...
+                    sqrt(2.*pi)).*T.^(alpha_-0.5).*exp(-beta_.*T).* ...
+                    exp(-v_*T.*((X1-mu0_).^2)./2);
+                posterior = prior .* likelihood(ones(1,101),:);
+                figure;
+                mesh(X1,T,posterior);
+                title(strcat({'Gaussian Posterior '}, num2str(n), ...
+                    {' samples'}));
+                xlabel('Mean');
+                ylabel('T');
+                zlabel('Likelihood');
+            end
+        end
+    end
+end
+
+%Final posterior
+mean_ml = mean_ml_sum ./ N1;
+mean_cp = mean_cp_sum ./ N1;
+
+likelihood = normpdf(0:100,mu0_,beta_/alpha_);
+prior = (beta_.^alpha_).*sqrt(v_)./(gamma(alpha_).* ...
+    sqrt(2.*pi)).*T.^(alpha_-0.5).*exp(-beta_.*T).* ...
+    exp(-v_*T.*((X1-mu0_).^2)./2);
+posterior = prior .* likelihood(ones(1,101),:);
+figure;
+mesh(X1,T,posterior);
+title(strcat('Gaussian Final Posterior'));
+xlabel('Mean');
+ylabel('T');
+zlabel('Likelihood');
+
+figure;
+semilogy(mean_ml);
+title('Gaussian Mean ML Error');
+xlabel('Number Samples');
+ylabel('Error');
+
+figure;
+semilogy(mean_cp);
+title('Gaussian Mean CP Error');
+xlabel('Number Samples');
+ylabel('Error');
+##### SOURCE END #####
+--></body></html>
