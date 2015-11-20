@@ -1,0 +1,84 @@
+%Mini MATLAB #1
+%Mark Mchedlishvili
+
+mu = 0;
+sigma = 0.1;
+N = 25;
+x = 0:0.01:1;
+beta = 5;
+alpha = 1;
+noise_pd = makedist('Normal', 'mu', mu, 'sigma', sigma);
+noise = random(noise_pd, 1, N);
+
+xd = rand(1,N).';
+yd = sin(2*pi*xd) + noise.';
+
+
+
+figure;
+plot(x,sin(2*pi*x));
+title('20 Data Points');
+hold on;
+scatter(xd, yd);
+
+C = zeros(N,N);
+beta = 5;
+delta = 1;
+
+for i = 1:N
+    for j = 1:N
+        C(i,j) = k(yd(i),yd(j)) + 1/beta*delta;
+    end
+end
+
+for x = 0:0.01:1
+    kx = zeros(1,N);
+    for i = 1:N
+        kx(i) = k(x,
+    end
+end
+
+%k(x,x') = exp(-abs(x-x')^2/(2*var));
+%p(t|y) = Normal(t | y, 1/beta*I_N);
+%p(t) = Normal(y | 0, K);
+%C(xn,xm) = k(xn,xm) + 1/beta*delta_nm;
+%k(xn, xm) = theta0*exp() + theta2 + theta3 * x_n.' * xm;
+%p(t_N+1) = Normal(t_N+1 | 0,C_N+1);
+%C_N+1 = [C_N, k; k.' c];
+
+%mu(x_N+1) = k.' * inv(C_n) * t;
+%var(x_N+1) = c - k.' * inv(C_n) * k;
+
+
+%{
+phi = zeros(N,9);
+phi(:,1) = ones(N,1);
+for i = 2:9
+    phi(:,i) = exp(-((xd-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+SN = inv(alpha*eye(9) + beta*(phi.')*phi);
+mN = beta*SN*(phi.')*yd; %#ok<MINV>
+
+stuff = mN(1);
+for i = 2:9
+    stuff = stuff + mN(i)*exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+plot(x,stuff);
+
+xphi = zeros(101,9);
+xphi(:,1) = ones(101,1);
+for i = 2:9
+    xphi(:,i) = exp(-((x-(i-2)/7).^2)/(2*(0.25.^2)));
+end
+
+var = zeros(1,101);
+for i = 1:101
+    var(i) = 1/beta + xphi(i,:)*SN*(xphi(i,:).');
+end
+
+xx = [x, fliplr(x)];
+yy = [stuff+var, fliplr(stuff-var)];
+fill(xx, yy, 'r', 'FaceAlpha', 0.1);
+%}

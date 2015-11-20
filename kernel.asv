@@ -1,0 +1,5 @@
+% Gaussian radial basis
+function kernel = kernel(xn,xm)
+var = 
+kernel = exp(-abs(xn-xm)^2/(2*var));
+end
